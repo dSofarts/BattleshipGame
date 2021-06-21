@@ -16,9 +16,6 @@ public class Game {
         char[][] playerFieldOne = new char[FIELD_LENGTH][FIELD_LENGTH];
         char[][] playerFieldTwo = new char[FIELD_LENGTH][FIELD_LENGTH];
 
-//        char[][] playerBattleOne = new char[FIELD_LENGTH][FIELD_LENGTH];
-//        char[][] playerBattleTwo = new char[FIELD_LENGTH][FIELD_LENGTH];
-
         fillPlayerField(playerFieldOne);
         fillPlayerField(playerFieldTwo);
     }
@@ -66,5 +63,38 @@ public class Game {
             System.out.println("");
             System.out.println("--------------------");
         }
+    }
+
+    private static void playGame(String playerOneName, String playerTwoName, char[][] playerFieldOne, char[][] playerFieldTwo) {
+        char[][] playerBattleOne = new char[FIELD_LENGTH][FIELD_LENGTH];
+        char[][] playerBattleTwo = new char[FIELD_LENGTH][FIELD_LENGTH];
+
+        String currentPlayerName = playerOneName;
+        char[][] currentPlayerField = playerFieldTwo;
+        char[][] currentPlayerBattleField = playerBattleOne;
+
+        while(isPlayerAlive(playerFieldOne) && isPlayerAlive(playerFieldTwo)) {
+            System.out.println(currentPlayerName + ", пожалуйста введите координату X для выстрела");
+            int xShot = scanner.nextInt();
+
+            System.out.println(currentPlayerName + ", пожалуйста введите координату Y для выстрела");
+            int yShot = scanner.nextInt();
+
+            int shotResult = handleShot(currentPlayerBattleField, currentPlayerField, xShot, yShot);
+
+            if (shotResult == 0) {
+                currentPlayerName = playerTwoName;
+                currentPlayerField = playerFieldOne;
+                currentPlayerBattleField = playerBattleTwo;
+            }
+        }
+    }
+
+    private static int handleShot(char[][] battleField, char[][] field, int x, int y) {
+        // TODO: 21.06.2021  
+    }
+    
+    private static boolean isPlayerAlive(char[][] field) {
+        // TODO: 21.06.2021  
     }
 }
