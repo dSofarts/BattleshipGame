@@ -9,15 +9,24 @@ public class Game {
         String playerOneName = scanner.nextLine();
         System.out.println("Привет, " + playerOneName + "!");
 
-        System.out.println("Игрок 1, пожалуйста введите ваше имя");
+        System.out.println("Игрок 2, пожалуйста введите ваше имя");
         String playerTwoName = scanner.nextLine();
         System.out.println("Привет, " + playerTwoName + "!");
+
+        System.out.println();
 
         char[][] playerFieldOne = new char[FIELD_LENGTH][FIELD_LENGTH];
         char[][] playerFieldTwo = new char[FIELD_LENGTH][FIELD_LENGTH];
 
-        fillPlayerField(playerFieldOne);
-        fillPlayerField(playerFieldTwo);
+        try {
+            System.out.println(playerOneName + " заполните поле корбалями");
+            fillPlayerField(playerFieldOne);
+            System.out.println();
+            System.out.println(playerTwoName + " заполните поле корбалями");
+            fillPlayerField(playerFieldTwo);
+        } catch (Exception ex) {
+            ex.fillInStackTrace();
+        }
     }
 
     private static void fillPlayerField(char[][] playerField) {
@@ -26,7 +35,7 @@ public class Game {
             for (int k = 0; k < numberShips; k++) {
                 System.out.println("Расставляем " + i + "-палубный корабль. Осталось расставить: " + numberShips);
 
-                int validationResult = 1;
+                int validationResult = -1;
                 int x = -1;
                 int y = -1;
                 int position = -1;
@@ -44,20 +53,24 @@ public class Game {
                     validationResult = validateCoordForShip(playerField, x, y, position, i);
                 }
 
-                if (position == 1) {
-                    for (int q = 0; q < i; q++) {
-                        playerField[y][x + q] = '1';
+                try {
+                    if (position == 1) {
+                        for (int q = 0; q < i; q++) {
+                            playerField[y][x + q] = '1';
+                        }
                     }
-                }
-                if (position == 2) {
-                    for (int m = 0; m < i; m++) {
-                        playerField[y + m][x] = '1';
+                    if (position == 2) {
+                        for (int m = 0; m < i; m++) {
+                            playerField[y + m][x] = '1';
+                        }
                     }
+                    if (position != 1 || position != 2) {
+                        System.err.println("Не верная команда положения!");
+                    }
+                    printField(playerField);
+                } catch (Exception ex) {
+                    System.err.println("Не возможно так поставить корабль! Повторите попытку!");
                 }
-                else {
-                    System.out.println("Ошибка");
-                }
-                printField(playerField);
             }
         }
     }
@@ -84,7 +97,7 @@ public class Game {
         char[][] currentPlayerField = playerFieldTwo;
         char[][] currentPlayerBattleField = playerBattleOne;
 
-        while(isPlayerAlive(playerFieldOne) && isPlayerAlive(playerFieldTwo)) {
+        while (isPlayerAlive(playerFieldOne) && isPlayerAlive(playerFieldTwo)) {
             System.out.println("Ход игрока " + currentPlayerName);
             printField(currentPlayerBattleField);
             System.out.println(currentPlayerName + ", пожалуйста введите координату X для выстрела");
@@ -115,7 +128,7 @@ public class Game {
         field[y][x] = '*';
         return 0;
     }
-    
+
     private static boolean isPlayerAlive(char[][] field) {
         for (char[] cells : field) {
             for (char cell : cells) {
