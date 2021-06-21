@@ -26,14 +26,23 @@ public class Game {
             for (int k = 0; k < numberShips; k++) {
                 System.out.println("Расставляем " + i + "-палубный корабль. Осталось расставить: " + numberShips);
 
-                System.out.println("Введите координату по оси X ");
-                int x = scanner.nextInt() - 1;
+                int validationResult = 1;
+                int x = -1;
+                int y = -1;
+                int position = -1;
 
-                System.out.println("Введите координату по оси Y ");
-                int y = scanner.nextInt() - 1;
+                while (validationResult != 0) {
+                    System.out.println("Введите координату по оси X ");
+                    x = scanner.nextInt() - 1;
 
-                System.out.println("1 - горизонтально; 2 - вертикально");
-                int position = scanner.nextInt();
+                    System.out.println("Введите координату по оси Y ");
+                    y = scanner.nextInt() - 1;
+
+                    System.out.println("1 - горизонтально; 2 - вертикально");
+                    position = scanner.nextInt();
+
+                    validationResult = validateCoordForShip(playerField, x, y, position, i);
+                }
 
                 if (position == 1) {
                     for (int q = 0; q < i; q++) {
@@ -45,7 +54,9 @@ public class Game {
                         playerField[y + m][x] = '1';
                     }
                 }
-
+                else {
+                    System.out.println("Ошибка");
+                }
                 printField(playerField);
             }
         }
@@ -74,6 +85,8 @@ public class Game {
         char[][] currentPlayerBattleField = playerBattleOne;
 
         while(isPlayerAlive(playerFieldOne) && isPlayerAlive(playerFieldTwo)) {
+            System.out.println("Ход игрока " + currentPlayerName);
+            printField(currentPlayerBattleField);
             System.out.println(currentPlayerName + ", пожалуйста введите координату X для выстрела");
             int xShot = scanner.nextInt();
 
@@ -88,13 +101,46 @@ public class Game {
                 currentPlayerBattleField = playerBattleTwo;
             }
         }
+        System.out.println(currentPlayerName + " выиграл!");
     }
 
     private static int handleShot(char[][] battleField, char[][] field, int x, int y) {
-        // TODO: 21.06.2021  
+        if (field[y][x] == '1') {
+            field[y][x] = '#';
+            battleField[y][x] = '#';
+            System.out.println("Хороший выстрел");
+            return 1;
+        }
+        battleField[y][x] = '*';
+        field[y][x] = '*';
+        return 0;
     }
     
     private static boolean isPlayerAlive(char[][] field) {
-        // TODO: 21.06.2021  
+        for (char[] cells : field) {
+            for (char cell : cells) {
+                if (cell == '1') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static int validateCoordForShip(char[][] field, int x, int y, int position, int shipType) {
+        if (position == 1) {
+            for (int i = 0; i < shipType - 1; i++) {
+                if (field[y][x + i] == '1' || field[y - 1][x + i] == '1' || field[y + 1][x + i] == '1' || field[y][x + i + 1] == '1' || field[y][x + i - 1] == '1' || (x + i) > 9) {
+                    return -1;
+                }
+            }
+        } else if (position == 2) {
+            for (int i = 0; i < shipType - 1; i++) {
+                if (field[y][x + i] == '1' || field[y - 1][x + i] == '1' || field[y + 1][x + i] == '1' || field[y][x + i + 1] == '1' || field[y][x + i - 1] == '1' || (y + i) > 9) {
+                    return -1;
+                }
+            }
+        }
+        return 0;
     }
 }
